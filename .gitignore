@@ -1,0 +1,10 @@
+*.o
+*.elf
+*.map
+*.pdf
+*.hex
+*.dis
+*.san.c
+znet
+tools/dbch-tool
+tools/dbch-pcap

@@ -1,0 +1,42 @@
+if( !isdefinedsymbol(FLASH_SIZE) ) {
+  define symbol FLASH_SIZE = 1024K;
+}
+if( !isdefinedsymbol(RAM_SIZE) ) {
+  define symbol RAM_SIZE = 256K;
+}
+
+if ( RAM_SIZE == 31K ) {
+  define symbol TRUE_RAM_SIZE = 32K;
+}
+else {
+  define symbol TRUE_RAM_SIZE = RAM_SIZE;
+}
+
+define symbol NO_FIB = 1;
+define memory mem with size = 4G;
+
+define symbol RAM_BOTTOM          = 0x20000000;
+define symbol RAM_TOP             = RAM_BOTTOM + TRUE_RAM_SIZE - 1;
+
+define exported symbol logo	  = FLASH_SIZE - 16K;
+
+define symbol MFB_BOTTOM          = 0x00000000;
+define symbol MFB_TOP             = 0x000FFFFF;
+
+if( isdefinedsymbol(RAM_RETAIN_SIZE) ) {
+    define symbol UNUSED_RAM_SIZE = RAM_TOP - RAM_BOTTOM + 1 - RAM_RETAIN_SIZE;
+} else {
+    define symbol UNUSED_RAM_SIZE = 0;
+}
+
+if ( !isdefinedsymbol(HEADER_SIZE) ) {
+	define symbol HEADER_SIZE = 512;
+}
+
+
+// include the common icf which locates all the sections
+if(isdefinedsymbol(BOOTLOADER)) {
+  include "../bootloader/iar-cfg-boot.icf";
+} else {
+  include "znet/platform/base/hal/micro/cortexm3/iar-cfg-common.icf";
+}
