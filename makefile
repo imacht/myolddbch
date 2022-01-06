@@ -355,13 +355,14 @@ prog-%: %.hex
 #	commander flash -d EFR32MG12P433F1024GM48 --tokengroup znet --tokenfile $^
 
 jlink-%: %.hex
-	echo "loadfile $<\nr\ng\nq" > tmp.jlink
-	JLinkExe -device EFR32MG12PxxxF1024 -if SWD -speed 4000 -autoconnect 1 -CommanderScript tmp.jlink
+#	(echo erase && echo "loadfile $< " && echo r && echo g && echo q) > tmp.jlink
+	(echo "loadfile $< " && echo r && echo g && echo q) > tmp.jlink
+	JLink -device EFR32MG12PxxxF1024 -if SWD -speed 4000 -autoconnect 1 -CommanderScript tmp.jlink
 	rm tmp.jlink
 jlink: jlink-dbch
 
 jdebug:
-	JLinkExe -device EFR32MG12PxxxF1024 -if SWD -speed 4000 -autoconnect 1
+	JLink -device EFR32MG12PxxxF1024 -if SWD -speed 4000 -autoconnect 1
 
 clean:
 	rm -f *.o *.map *.elf *.hex *.bin *.dis *.log *.lst
