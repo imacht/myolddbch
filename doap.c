@@ -1,6 +1,5 @@
 #include <dbch.h>
 
-
 struct doap_obj {
 	struct doap_obj *next;
 	const char *name;
@@ -90,7 +89,10 @@ int doap_obj_parse(char *text, objp_f *got, void *ctx)
 	text = skip_tag(text);
 	if (*text++ != '{')
 		return 0; // not an object
-
+		
+	char buf[30];
+	strcpy(buf, text);	// make copy for writing to
+	text = buf;
 	int index = 0, depth = 0;
 	while (*text && *text != '}') {
 // TODO handle strings better
@@ -105,7 +107,10 @@ int doap_obj_parse(char *text, objp_f *got, void *ctx)
 		} else {
 			while (*text && *text != ',' && *text != '}')
 				text++;
+			if (',' == *text || '}' == *text)
+				*text++ = 0;	// terminate element string 
 		}
+//uartf("---  doap_obj_parse: index:%d  element:%s  text:%s\n", index, element, text);
 
 		tmp = *text , *text = 0;
 		if (got)
@@ -158,6 +163,7 @@ int doap_run(char *obj)
 	return -1;
 }
 
+/*
 int64_t hex2int(char *h)
 {
 	uint64_t r = 0;
@@ -172,6 +178,25 @@ int64_t hex2int(char *h)
 	}
 
 	return neg ? -r : r;
+}
+*/
+/**
+ * hex2int
+ */
+int64_t hex2int(char *hex) {
+    uint32_t val = 0;
+	if (strlen(hex) > 1 && hex[0] == '0' && hex[1] == 'x')
+		hex += 2;						// skip leading "0x" only
+	int i = 0;
+    while (*hex && i++ < 16) {			// limit to 32 bit conversions
+        uint8_t byte = *hex++; 
+        if (byte >= '0' && byte <= '9') byte = byte - '0';
+        else if (byte >= 'a' && byte <='f') byte = byte - 'a' + 10;
+        else if (byte >= 'A' && byte <='F') byte = byte - 'A' + 10;    
+		else break;  
+        val = (val << 4) | (byte & 0xF);   // add in next nibble digit 
+    }
+    return (int64_t)val;
 }
 
 int hex2bin(char *h, uint8_t *b)

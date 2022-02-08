@@ -216,6 +216,8 @@ static int mtrs_set(void *ctx, char *val)
 		return uartf("no more meters\n");
 
 	doap_obj_parse(val, (objp_f*)mtrs_parse, m);
+	uartf("---  mtrs_set: after parse  MtrDevTyp:%d  PymCtl:0x%04X  Ep:%d\n", 
+			m->MeteringDeviceType, m->PaymentControl, m->ep);
 	emberAfEndpointEnableDisable(m->ep, true);
 	doap_mtr_add(m);
 	return mtrs_out(m);
@@ -245,6 +247,11 @@ static void null_init(void) { }
 
 
 // exports
+
+int call_mtrs_set(void *ctx, char *val)
+{
+	return mtrs_set(ctx, val);
+}
 
 bool emberAfMainStartCallback(int *returnCode, int argc, char **argv)
 { // called before starting the stack

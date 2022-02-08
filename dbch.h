@@ -235,6 +235,8 @@ struct meter* meter_new(void);
 struct meter* meter_find(uint8_t endpoint);
 void meter_free(struct meter *m);
 
+int call_mtrs_set(void *ctx, char *val);
+
 struct debt* debt_find(struct debt *list, uint8_t Ordinal);
 void debts_free(struct meter *m);
 void topups_free(struct meter *m);

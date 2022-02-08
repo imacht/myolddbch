@@ -544,6 +544,8 @@ void app_init(void)
 {
 	nv_init();
 	// TODO add / load fakey meters and register DOAP objects
+	int mp = call_mtrs_set(NULL, "{0x0E,0x0300}");
+	uartf("--- Meter added: %d\n", mp);
 }
 
 int SelectAvailableEmergencyCredit(struct meter *m, uint32_t CommandIssueDateTime, uint8_t OriginatingDevice)
