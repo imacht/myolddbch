@@ -184,13 +184,16 @@ int64_t hex2int(char *h)
  * hex2int
  */
 int64_t hex2int(char *hex) {
-    uint32_t val = 0;
+    uint64_t val = 0;
+	uint8_t neg = false;
 	while (*hex && hex[0] == ' ')	// skip leading spaces
 		hex++;
+	if (*hex && hex[0] == '-')		// test for -ve
+		neg = true, hex++;
 	if (*hex && strlen(hex) > 1 && hex[0] == '0' && hex[1] == 'x')
 		hex += 2;						// skip leading "0x"
 	int i = 0;
-    while (*hex && i++ < 16) {			// limit to 32 bit conversions
+    while (*hex && i++ < 16) {
         uint8_t byte = *hex++; 
         if (byte >= '0' && byte <= '9') byte = byte - '0';
         else if (byte >= 'a' && byte <='f') byte = byte - 'a' + 10;
@@ -198,7 +201,7 @@ int64_t hex2int(char *hex) {
 		else break;  					// quit on non-hex char
         val = (val << 4) | (byte & 0xF);   // add in next nibble digit 
     }
-    return (int64_t)val;
+    return neg?-val:val;
 }
 
 int hex2bin(char *h, uint8_t *b)
