@@ -185,15 +185,17 @@ int64_t hex2int(char *h)
  */
 int64_t hex2int(char *hex) {
     uint32_t val = 0;
-	if (strlen(hex) > 1 && hex[0] == '0' && hex[1] == 'x')
-		hex += 2;						// skip leading "0x" only
+	while (*hex && hex[0] == ' ')	// skip leading spaces
+		hex++;
+	if (*hex && strlen(hex) > 1 && hex[0] == '0' && hex[1] == 'x')
+		hex += 2;						// skip leading "0x"
 	int i = 0;
     while (*hex && i++ < 16) {			// limit to 32 bit conversions
         uint8_t byte = *hex++; 
         if (byte >= '0' && byte <= '9') byte = byte - '0';
         else if (byte >= 'a' && byte <='f') byte = byte - 'a' + 10;
         else if (byte >= 'A' && byte <='F') byte = byte - 'A' + 10;    
-		else break;  
+		else break;  					// quit on non-hex char
         val = (val << 4) | (byte & 0xF);   // add in next nibble digit 
     }
     return (int64_t)val;

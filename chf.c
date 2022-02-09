@@ -216,7 +216,7 @@ static int mtrs_set(void *ctx, char *val)
 		return uartf("no more meters\n");
 
 	doap_obj_parse(val, (objp_f*)mtrs_parse, m);
-	uartf("---  mtrs_set: after parse  MtrDevTyp:%d  PymCtl:0x%04X  Ep:%d\n", 
+	uartf("---  mtrs_set: after parse  MtrDevTyp:%d  PymCtl:0x%x  Ep:%d\n", 
 			m->MeteringDeviceType, m->PaymentControl, m->ep);
 	emberAfEndpointEnableDisable(m->ep, true);
 	doap_mtr_add(m);
